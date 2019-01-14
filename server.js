@@ -82,6 +82,7 @@ socketIo.sockets.on("connection", socket => {
         cb(config);
     });
 });
+
 server.listen(3000, () => {
     console.log("asnzsthl已启动，端口：3000");
 });
