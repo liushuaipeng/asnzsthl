@@ -1,7 +1,7 @@
 module.exports = {
     nodeConfig: {
         host: "localhost",
-        port: "3000"
+        port: "3030"
     },
     voteList: [
         {
