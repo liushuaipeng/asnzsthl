@@ -1,16 +1,27 @@
 <template>
   <div class="vote">
     <div class="wrapper">
-      <el-card class="box-card">
-        <div slot="header"
-          class="clearfix">
-          <span>卡片名称</span>
+      <el-card class="box-card"
+        v-for="(item,i) in voteList"
+        :key="i">
+        <div slot="header">
+          <span>{{item.title}}</span>
         </div>
-        <div class="text item">123</div>
+        <div class="box_item"
+          v-for="(s_item,key) in item.data"
+          :key="key">
+          <el-radio v-model="item.value"
+            :label="key"
+            border
+            size="medium">{{s_item}}</el-radio>
+        </div>
       </el-card>
-      <el-card class="box-card">
-        <div>标题提他他他</div>
-      </el-card>
+      <div>
+        <el-button class="submit_button"
+          type="primary"
+          @click="submit">投票</el-button>
+      </div>
+
     </div>
   </div>
 </template>
@@ -27,6 +38,18 @@ export default {
       console.log(res);
       this.voteList = res.data.data;
     });
+  },
+  methods: {
+    submit() {
+      if (!confirm("确定投票么？")) {
+        return;
+      }
+      var params = JSON.parse(JSON.stringify(this.voteList));
+      axios.post("/api/vote/submit", this.voteList).then(res => {
+        alert(res.data.data);
+        // this.voteList = res.data.data;
+      });
+    }
   }
 };
 </script>
@@ -46,6 +69,12 @@ export default {
 }
 .el-card {
   margin: 10px 0;
+}
+.box_item {
+  margin-bottom: 10px;
+}
+.submit_button {
+  width: 100%;
 }
 </style>
 

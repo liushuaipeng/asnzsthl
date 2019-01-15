@@ -6,6 +6,7 @@ var nodeConfig = require("./config.js").nodeConfig;
 
 var app = express();
 app.use(express.static(path.join(__dirname, "www/vue/dist")));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var server = http.createServer(app);
@@ -96,11 +97,24 @@ var voteData = {
     // 0 停止投票
     // 1 正在投票
     state: 0,
-    data: []
+    data: {}
 };
 // 页面初始化时获取数据
 app.get("/api/vote/getList", (req, res) => {
     res.json({ code: "success", data: voteList });
+});
+// 提交投票
+app.post("/api/vote/submit", (req, res) => {
+    if (voteData.state === 0) {
+        res.json({ code: "error", data: "投票尚未开始" });
+        return;
+    }
+    req.body.forEach(item => {
+        if (!!item.value) {
+            voteData.data[item.value] = voteData.data[item.value] + 1;
+        }
+    });
+    res.json({ code: "success", data: "投票成功" });
 });
 server.listen(nodeConfig.port, () => {
     console.log("asnzsthl已启动，端口：" + nodeConfig.port);

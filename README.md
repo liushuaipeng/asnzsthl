@@ -9,6 +9,9 @@
 * "/www/vue"下执行npm run dev，启动前端开发环境，默认端口8080
 
 ## 生产环境
+* 在config.js下配置host以及port
 * 在"/www/vue"执行npm run build
 * 生产环境下只有"/www/vue/dist"的文件有效，"/www/vue"下的其他文件可以删除
-* 在config.js下配置host以及port
+
+## 注意事项
+* 切记！！！务必先修改配置文件，然后前端构建npm run build
