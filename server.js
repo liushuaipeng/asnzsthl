@@ -71,11 +71,15 @@ socketIo.sockets.on("connection", socket => {
     });
     // 删除某一项抽奖结果
     socket.on("lotteryRemove", (id, cb) => {
+        var self;
         config.data.forEach((item, index) => {
             if (item.id === id) {
+                self = JSON.parse(JSON.stringify(item));
                 config.data.splice(index, 1);
             }
         });
+        // 删除人员重新放到未中奖数组
+        config.totalPersonInit.concat(self.result);
         config.state = 0;
         socketIo.emit("lotteryStart", config);
         cb(config);
