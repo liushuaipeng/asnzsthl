@@ -39,6 +39,13 @@ export default new Router({
       component(resolve) {
         return require(["@/components/voteAdmin"], resolve);
       }
+    },
+    {
+      path: "/voteTool",
+      name: "voteTool",
+      component(resolve) {
+        return require(["@/components/voteTool"], resolve);
+      }
     }
   ]
 });
