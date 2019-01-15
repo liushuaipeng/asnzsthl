@@ -43,12 +43,14 @@ socketIo.sockets.on("connection", socket => {
         config.number = data.number;
         socketIo.emit("lotterySubmit", config);
         cb(config);
+        console.log(`准备抽奖;名称：${config.title};人数:${config.number}`);
     });
     // 开始抽奖
     socket.on("lotteryGoStart", (data, cb) => {
         config.state = 2;
         socketIo.emit("lotteryStart", config);
         cb(config);
+        console.log("开始抽奖");
     });
     // 停止抽奖
     socket.on("lotteryGoStop", (data, cb) => {
@@ -69,6 +71,12 @@ socketIo.sockets.on("connection", socket => {
         });
         socketIo.emit("lotteryStop", config);
         cb(config);
+        console.log(
+            `生成id为${config.id}的奖项;名称：${config.title};人数：${
+                config.number
+            };人员:${config.result.join(",")};未中奖人员`,
+            config.totalPersonInit
+        );
     });
     // 删除某一项抽奖结果
     socket.on("lotteryRemove", (id, cb) => {
@@ -84,6 +92,12 @@ socketIo.sockets.on("connection", socket => {
         config.state = 0;
         socketIo.emit("lotteryStart", config);
         cb(config);
+        console.log(
+            `删除id：${id}的奖项;未中奖人数：${
+                config.totalPersonInit.length
+            };人员:`,
+            config.totalPersonInit
+        );
     });
     // 初始化页面
     socket.on("lotteryInit", (data, cb) => {
@@ -115,6 +129,7 @@ app.post("/api/vote/submit", (req, res) => {
         }
     });
     res.json({ code: "success", data: "投票成功" });
+    console.log(`ip为${req.ip}投票成功;当前结果`, voteData.data);
 });
 server.listen(nodeConfig.port, () => {
     console.log("asnzsthl已启动，端口：" + nodeConfig.port);

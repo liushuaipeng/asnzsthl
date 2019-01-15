@@ -38,6 +38,8 @@ export default {
       console.log(res);
       this.voteList = res.data.data;
     });
+    var aaa = '哈哈'
+    console.log(`aaa为${aaa}`)
   },
   methods: {
     submit() {
