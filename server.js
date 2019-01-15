@@ -90,6 +90,18 @@ socketIo.sockets.on("connection", socket => {
     });
 });
 
+// 投票逻辑
+var voteList = require("./config.js").voteList;
+var voteData = {
+    // 0 停止投票
+    // 1 正在投票
+    state: 0,
+    data: []
+};
+// 页面初始化时获取数据
+app.get("/api/vote/getList", (req, res) => {
+    res.json({ code: "success", data: voteList });
+});
 server.listen(nodeConfig.port, () => {
     console.log("asnzsthl已启动，端口：" + nodeConfig.port);
 });

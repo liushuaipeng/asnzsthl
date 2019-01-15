@@ -25,6 +25,20 @@ export default new Router({
       component(resolve) {
         return require(["@/components/lotteryAdmin"], resolve);
       }
+    },
+    {
+      path: "/vote",
+      name: "vote",
+      component(resolve) {
+        return require(["@/components/vote"], resolve);
+      }
+    },
+    {
+      path: "/voteAdmin",
+      name: "voteAdmin",
+      component(resolve) {
+        return require(["@/components/voteAdmin"], resolve);
+      }
     }
   ]
 });
