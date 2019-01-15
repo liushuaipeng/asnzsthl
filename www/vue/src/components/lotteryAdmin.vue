@@ -10,21 +10,25 @@
         <span
           v-if="config.state === 2"
           slot="title"
-        >{{'当前抽奖奖项: ' + config.title + '; 抽奖人数: ' + config.number + '; 抽奖中，点击停止按钮即可确定本次抽奖人员。'}}</span>
+        >{{'抽奖中，当前抽奖奖项: ' + config.title + '; 抽奖人数: ' + config.number + '; 点击停止按钮即可确定本次抽奖人员。'}}</span>
         <span
           v-if="config.state === 3"
           slot="title"
-        >{{'当前抽奖奖项: ' + config.title + '; 抽奖人数: ' + config.number + '; 抽奖完成，抽奖结果如下表。再次抽奖请直接下方输入并点击确定即可。'}}</span>
+        >{{'抽奖完成，当前抽奖奖项: ' + config.title + '; 抽奖人数: ' + config.number + '; 抽奖结果如下表。再次抽奖请直接下方输入并点击确定即可。'}}</span>
       </el-alert>
-      <el-form :inline="true" :model="form" class="demo-form-inline">
+      <el-form :inline="true" :model="config" class="demo-form-inline">
         <el-form-item label="奖项名称">
-          <el-input v-model="form.title" placeholder="例如：特等奖"></el-input>
+          <el-input v-model="config.title" placeholder="例如：特等奖"></el-input>
         </el-form-item>
         <el-form-item label="人数">
-          <el-input v-model.number="form.number" placeholder="例如：1"></el-input>
+          <el-input v-model.number="config.number" placeholder="例如：1"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" :disabled="!form.number || !form.title">确定</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit"
+            :disabled="!config.number || !config.title || config.state===2"
+          >确定</el-button>
         </el-form-item>
       </el-form>
       <div style="margin-bottom: 50px;">
@@ -59,39 +63,28 @@
 export default {
   data() {
     return {
-      form: {
+      config: {
+        state: 0,
         title: "",
         number: 0
-      },
-      config: {
-        state: 0
       }
     };
   },
   methods: {
     onSubmit() {
-      var data = JSON.parse(JSON.stringify(this.form));
-      this.$socket.emit("lotteryGoSubmit", data, config => {
-        this.config = config;
-        console.log(this.config);
-      });
+      var data = JSON.parse(JSON.stringify(this.config));
+      this.$socket.emit("lotteryGoSubmit", data);
     },
     onStart() {
-      this.$socket.emit("lotteryGoStart", "go", config => {
-        this.config = config;
-      });
+      this.$socket.emit("lotteryGoStart", "go");
     },
     onStop() {
-      this.$socket.emit("lotteryGoStop", "stop", config => {
-        this.config = config;
-      });
+      this.$socket.emit("lotteryGoStop", "stop");
     },
     handleRemoveClick(id) {
       this.$confirm("确定删除ID为" + id + "的奖项吗？")
         .then(_ => {
-          this.$socket.emit("lotteryRemove", id, config => {
-            this.config = config;
-          });
+          this.$socket.emit("lotteryGoRemove", id);
         })
         .catch(_ => {});
     }
@@ -104,6 +97,18 @@ export default {
       this.$socket.emit("lotteryInit", { url: "lotteryAdmin" }, config => {
         this.config = config;
       });
+    },
+    lotterySubmit(config) {
+      this.config = config;
+    },
+    lotteryStart(config) {
+      this.config = config;
+    },
+    lotteryStop(config) {
+      this.config = config;
+    },
+    lotteryRemove(config) {
+      this.config = config;
     }
   }
 };

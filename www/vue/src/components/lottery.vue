@@ -73,6 +73,9 @@ export default {
       this.config = config;
       this.stopAnimation();
       this.lotteryingPerson = JSON.parse(JSON.stringify(config.result));
+    },
+    lotteryRemove(config) {
+      this.config = config;
     }
   }
 };

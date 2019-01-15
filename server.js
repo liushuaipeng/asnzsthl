@@ -37,23 +37,21 @@ for (let i = 1; i <= 250; i++) {
 }
 socketIo.sockets.on("connection", socket => {
     // 确定本次抽奖概况
-    socket.on("lotteryGoSubmit", (data, cb) => {
+    socket.on("lotteryGoSubmit", data => {
         config.state = 1;
         config.title = data.title;
         config.number = data.number;
         socketIo.emit("lotterySubmit", config);
-        cb(config);
         console.log(`准备抽奖;名称：${config.title};人数:${config.number}`);
     });
     // 开始抽奖
-    socket.on("lotteryGoStart", (data, cb) => {
+    socket.on("lotteryGoStart", data => {
         config.state = 2;
         socketIo.emit("lotteryStart", config);
-        cb(config);
         console.log("开始抽奖");
     });
     // 停止抽奖
-    socket.on("lotteryGoStop", (data, cb) => {
+    socket.on("lotteryGoStop", data => {
         config.state = 3;
         config.id++;
         config.result = [];
@@ -70,16 +68,15 @@ socketIo.sockets.on("connection", socket => {
             id: config.id
         });
         socketIo.emit("lotteryStop", config);
-        cb(config);
         console.log(
             `生成id为${config.id}的奖项;名称：${config.title};人数：${
-                config.number
+            config.number
             };人员:${config.result.join(",")};未中奖人员`,
             config.totalPersonInit
         );
     });
     // 删除某一项抽奖结果
-    socket.on("lotteryRemove", (id, cb) => {
+    socket.on("lotteryGoRemove", id => {
         var self;
         config.data.forEach((item, index) => {
             if (item.id === id) {
@@ -88,13 +85,12 @@ socketIo.sockets.on("connection", socket => {
             }
         });
         // 删除人员重新放到未中奖数组
-        config.totalPersonInit.concat(self.result);
+        config.totalPersonInit = config.totalPersonInit.concat(self.result);
         config.state = 0;
-        socketIo.emit("lotteryStart", config);
-        cb(config);
+        socketIo.emit("lotteryRemove", config);
         console.log(
             `删除id：${id}的奖项;未中奖人数：${
-                config.totalPersonInit.length
+            config.totalPersonInit.length
             };人员:`,
             config.totalPersonInit
         );
