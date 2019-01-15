@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var path = require("path");
 var http = require("http");
+var nodeConfig = require("./config.js").nodeConfig;
 
 var app = express();
 app.use(express.static(path.join(__dirname, "www/vue/dist")));
@@ -27,7 +28,7 @@ var config = {
     // 未中奖人员
     totalPersonInit: [],
     // 所有抽奖结果
-    data: [],
+    data: []
 };
 for (let i = 1; i <= 250; i++) {
     config.totalPersonInit.push("蓝队" + i);
@@ -45,16 +46,18 @@ socketIo.sockets.on("connection", socket => {
     // 开始抽奖
     socket.on("lotteryGoStart", (data, cb) => {
         config.state = 2;
-        socketIo.emit('lotteryStart', config);
+        socketIo.emit("lotteryStart", config);
         cb(config);
     });
     // 停止抽奖
     socket.on("lotteryGoStop", (data, cb) => {
         config.state = 3;
         config.id++;
-        config.result = []
+        config.result = [];
         for (let i = 0; i < config.number; i++) {
-            var index = Math.floor(Math.random() * (config.totalPersonInit.length - i));
+            var index = Math.floor(
+                Math.random() * (config.totalPersonInit.length - i)
+            );
             config.result.push(config.totalPersonInit.splice(index, 1)[0]);
         }
         config.data.push({
@@ -62,19 +65,19 @@ socketIo.sockets.on("connection", socket => {
             number: config.number,
             result: config.result,
             id: config.id
-        })
-        socketIo.emit('lotteryStop', config);
+        });
+        socketIo.emit("lotteryStop", config);
         cb(config);
     });
     // 删除某一项抽奖结果
     socket.on("lotteryRemove", (id, cb) => {
         config.data.forEach((item, index) => {
             if (item.id === id) {
-                config.data.splice(index, 1)
+                config.data.splice(index, 1);
             }
-        })
+        });
         config.state = 0;
-        socketIo.emit('lotteryStart', config);
+        socketIo.emit("lotteryStart", config);
         cb(config);
     });
     // 初始化页面
@@ -83,6 +86,6 @@ socketIo.sockets.on("connection", socket => {
     });
 });
 
-server.listen(3000, () => {
-    console.log("asnzsthl已启动，端口：3000");
+server.listen(nodeConfig.port, () => {
+    console.log("asnzsthl已启动，端口：" + nodeConfig.port);
 });
