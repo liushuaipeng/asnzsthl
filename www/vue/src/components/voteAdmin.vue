@@ -184,6 +184,12 @@ export default {
       this.$socket.emit("voteInit", { url: "vote" }, data => {
         this.voteData = data;
         this.setData();
+        this.time = data.time;
+        if (data.state === 1) {
+          this.timeSetInterval = setInterval(() => {
+            this.time++;
+          }, 1000);
+        }
       });
     },
     voteChange(data) {

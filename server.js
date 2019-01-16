@@ -45,6 +45,7 @@ var voteData = {
     state: 0,
     // 投票数据
     data: {},
+    time: 0,
     voteList: voteList,
     // 本次投票的唯一标识(当前时间戳+6位随机数)，重置之后标识改变
     vd_id: new Date().getTime() + "" + (Math.random() * 1000000).toFixed(0)
@@ -176,7 +177,9 @@ app.post("/api/vote/start", (req, res) => {
         res.json({ code: "error", data: "已经开始投票，请勿重复点击！" });
     } else {
         voteData.state = 1;
+        voteData.time = 0;
         voteSetInterval = setInterval(() => {
+            voteData.time++;
             socketIo.emit("voteChange", voteData);
         }, 1000);
         socketIo.emit("voteTimeGo");
@@ -205,6 +208,7 @@ app.post("/api/vote/reload", (req, res) => {
         state: 0,
         // 投票数据
         data: {},
+        time: 0,
         voteList: voteList,
         vd_id: new Date().getTime() + "" + (Math.random() * 1000000).toFixed(0)
     };
