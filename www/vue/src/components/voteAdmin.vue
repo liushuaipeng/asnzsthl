@@ -19,7 +19,8 @@ export default {
       app: {},
       labelOption: {},
       color: ["#a557d9", "#44a275", "#fd5963", "#5970fd", "#fdd869"],
-      time: 60
+      time: 0,
+      timeSetInterval:null
     };
   },
   mounted() {
@@ -189,13 +190,13 @@ export default {
       this.setData();
     },
     voteTimeGo() {
-      this.time = 60;
-      var timeSetInterval = setInterval(() => {
-        this.time--;
-        if (this.time === 0) {
-          clearInterval(timeSetInterval);
-        }
+      this.time = 0;
+      this.timeSetInterval = setInterval(() => {
+        this.time++;
       }, 1000);
+    },
+    voteTimeStop(){
+      clearInterval(this.timeSetInterval)
     }
   }
 };

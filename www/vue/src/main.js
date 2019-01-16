@@ -12,7 +12,7 @@ Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(
   new VueSocketio({
-    connection: "http://" + nodeConfig.host + ":" + nodeConfig.port + "/"
+    connection: nodeConfig.host + ":" + nodeConfig.port + "/"
   })
 );
 /* eslint-disable no-new */

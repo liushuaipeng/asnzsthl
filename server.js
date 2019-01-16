@@ -165,6 +165,7 @@ app.post("/api/vote/stop", (req, res) => {
     } else {
         voteData.state = 0;
         clearInterval(voteSetInterval);
+        socketIo.emit('voteTimeStop');
         res.json({ code: "success", data: "停止投票" })
     }
 })

@@ -38,16 +38,21 @@ export default {
       console.log(res);
       this.voteList = res.data.data;
     });
-    var aaa = '哈哈'
-    console.log(`aaa为${aaa}`)
   },
   methods: {
     submit() {
+      if(localStorage.getItem('isVote') === "Y") {
+        alert('已经投过票了，请勿重复投票')
+        return;
+      }
       if (!confirm("确定投票么？")) {
         return;
       }
       var params = JSON.parse(JSON.stringify(this.voteList));
       axios.post("/api/vote/submit", this.voteList).then(res => {
+        if (res.data.code === "success") {
+          localStorage.setItem("isVote", "Y");
+        }
         alert(res.data.data);
         // this.voteList = res.data.data;
       });
