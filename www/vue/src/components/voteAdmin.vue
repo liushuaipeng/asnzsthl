@@ -3,7 +3,8 @@
     <div class="setTimeout">{{time}}秒</div>
     <div class="chart_wrapper">
       <el-card>
-        <div id="J_chartBarBox" class="chart-box"></div>
+        <div id="J_chartBarBox"
+          class="chart-box"></div>
       </el-card>
     </div>
   </div>
@@ -20,7 +21,7 @@ export default {
       labelOption: {},
       color: ["#a557d9", "#44a275", "#fd5963", "#5970fd", "#fdd869"],
       time: 0,
-      timeSetInterval:null
+      timeSetInterval: null
     };
   },
   mounted() {
@@ -195,8 +196,15 @@ export default {
         this.time++;
       }, 1000);
     },
-    voteTimeStop(){
-      clearInterval(this.timeSetInterval)
+    voteTimeStop() {
+      clearInterval(this.timeSetInterval);
+    },
+    // 重置投票
+    voteReload(data) {
+      clearInterval(this.timeSetInterval);
+      this.time = 0;
+      this.voteData = data;
+      this.setData();
     }
   }
 };

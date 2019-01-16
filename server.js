@@ -189,6 +189,26 @@ app.post("/api/vote/stop", (req, res) => {
         res.json({ code: "success", data: "停止投票" });
     }
 });
+// 重置投票
+app.post("/api/vote/reload", (req, res) => {
+    clearInterval(voteSetInterval);
+    voteData.state = 0;
+    voteData = {
+        // 0 停止投票
+        // 1 正在投票
+        state: 0,
+        // 投票数据
+        data: {},
+        voteList: voteList
+    };
+    voteList.forEach(item => {
+        for (const key in item.data) {
+            voteData.data[key] = 0;
+        }
+    });
+    socketIo.emit("voteReload",voteData);
+    res.json({ code: "success", data: "重置成功" });
+});
 server.listen(nodeConfig.port, () => {
     console.log("asnzsthl已启动，端口：" + nodeConfig.port);
 });
