@@ -10,9 +10,18 @@ import "element-ui/lib/theme-chalk/index.css";
 import { nodeConfig } from "../../../config";
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+var socketurl;
+// 开发环境
+if (process.env.NODE_ENV === "development") {
+  socketurl = nodeConfig.host + ":" + nodeConfig.port + "/";
+}
+// 生产环境
+if (process.env.NODE_ENV === "production") {
+  socketurl = location.hostname + ":" + location.port;
+}
 Vue.use(
   new VueSocketio({
-    connection: nodeConfig.host + ":" + nodeConfig.port + "/"
+    connection: socketurl
   })
 );
 /* eslint-disable no-new */
