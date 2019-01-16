@@ -77,6 +77,21 @@
         </el-table-column>
       </el-table>
     </el-card>
+    <el-card style="margin-top: 30px;">
+      <el-alert title="下方按钮请慎重操作！"
+        type="error">
+      </el-alert>
+      <div>
+        <ul>
+          <li>强制同步：强制同步展示页面状态。例如：由于网络原因，点击开始抽奖或者停止抽奖时，展示页面没有开始动画或者停止动画，可以点此按钮。 </li>
+          <li>重置：重置掉目前所有抽奖结果 </li>
+        </ul>
+      </div>
+      <div>
+        <el-button @click="syncView">强制同步</el-button>
+        <el-button @click="reloadLottery">重置</el-button>
+      </div>
+    </el-card>
   </div>
 </template>
 <script>
@@ -121,6 +136,13 @@ export default {
           this.config.number = item.number;
         }
       });
+    },
+    syncView() {
+      // this.$router.push('/lottery')
+      this.$socket.emit("lotteryGoSync");
+    },
+    reloadLottery() {
+      this.$socket.emit("reloadGoLottery");
     }
   },
   mounted() {
@@ -142,6 +164,9 @@ export default {
       this.config = config;
     },
     lotteryRemove(config) {
+      this.config = config;
+    },
+    reloadLottery(config) {
       this.config = config;
     }
   }

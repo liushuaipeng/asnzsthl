@@ -51,10 +51,8 @@ voteList.forEach(item => {
     for (const key in item.data) {
         voteData.data[key] = 0;
     }
-})
+});
 var voteSetInterval;
-
-
 
 socketIo.sockets.on("connection", socket => {
     // 确定本次抽奖概况
@@ -91,7 +89,7 @@ socketIo.sockets.on("connection", socket => {
         socketIo.emit("lotteryStop", config);
         console.log(
             `生成id为${config.id}的奖项;名称：${config.title};人数：${
-            config.number
+                config.number
             };人员:${config.result.join(",")};未中奖人员`,
             config.totalPersonInit
         );
@@ -111,10 +109,33 @@ socketIo.sockets.on("connection", socket => {
         socketIo.emit("lotteryRemove", config);
         console.log(
             `删除id：${id}的奖项;未中奖人数：${
-            config.totalPersonInit.length
+                config.totalPersonInit.length
             };人员:`,
             config.totalPersonInit
         );
+    });
+    // 强制同步
+    socket.on("lotteryGoSync", data => {
+        socketIo.emit("lotterySync", config);
+        console.log("强制同步");
+    });
+    // 重置抽奖结果
+    socket.on("reloadGoLottery", data => {
+        config = {
+            id: 0,
+            state: 0,
+            title: "",
+            number: 0,
+            result: [],
+            totalPersonInit: [],
+            data: []
+        };
+        for (let i = 1; i <= 250; i++) {
+            config.totalPersonInit.push("蓝队" + i);
+            config.totalPersonInit.push("红队" + i);
+        }
+        socketIo.emit("reloadLottery", config);
+        console.log("重置", new Date());
     });
     // 初始化页面
     socket.on("lotteryInit", (data, cb) => {
@@ -124,7 +145,6 @@ socketIo.sockets.on("connection", socket => {
         cb(voteData);
     });
 });
-
 
 // 页面初始化时获取数据
 app.get("/api/vote/getList", (req, res) => {
@@ -147,28 +167,28 @@ app.post("/api/vote/submit", (req, res) => {
 // 开始投票
 app.post("/api/vote/start", (req, res) => {
     if (voteData.state === 1) {
-        res.json({ code: "error", data: "已经开始投票，请勿重复点击！" })
+        res.json({ code: "error", data: "已经开始投票，请勿重复点击！" });
     } else {
         voteData.state = 1;
         voteSetInterval = setInterval(() => {
-            socketIo.emit('voteChange', voteData);
+            socketIo.emit("voteChange", voteData);
         }, 1000);
-        socketIo.emit('voteTimeGo');
-        console.log('开始投票', voteData)
-        res.json({ code: "success", data: "开始投票" })
+        socketIo.emit("voteTimeGo");
+        console.log("开始投票", voteData);
+        res.json({ code: "success", data: "开始投票" });
     }
-})
+});
 // 停止投票
 app.post("/api/vote/stop", (req, res) => {
     if (voteData.state === 0) {
-        res.json({ code: "error", data: "已经停止投票，请勿重复点击！" })
+        res.json({ code: "error", data: "已经停止投票，请勿重复点击！" });
     } else {
         voteData.state = 0;
         clearInterval(voteSetInterval);
-        socketIo.emit('voteTimeStop');
-        res.json({ code: "success", data: "停止投票" })
+        socketIo.emit("voteTimeStop");
+        res.json({ code: "success", data: "停止投票" });
     }
-})
+});
 server.listen(nodeConfig.port, () => {
     console.log("asnzsthl已启动，端口：" + nodeConfig.port);
 });

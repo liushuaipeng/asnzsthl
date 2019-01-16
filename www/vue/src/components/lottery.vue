@@ -4,12 +4,13 @@
       <span v-if="config.state === 0">等待确定奖项</span>
       <span v-if="config.state === 1">{{"奖项:" + config.title + "; 人数:" + config.number + "; 准备抽奖中"}}</span>
       <span v-if="config.state === 2">{{"奖项:" + config.title + "; 人数:" + config.number + "; 抽奖中"}}</span>
-      <span
-        v-if="config.state === 3"
-      >{{"奖项:" + config.title + "; 人数:" + config.number + "; 抽奖结果如下"}}</span>
+      <span v-if="config.state === 3">{{"奖项:" + config.title + "; 人数:" + config.number + "; 抽奖结果如下"}}</span>
     </div>
-    <div class="name" v-show="config.state === 2 || config.state === 3">
-      <div class="name_item" v-for="(item,i) in lotteryingPerson" :key="i">{{item}}</div>
+    <div class="name"
+      v-show="config.state === 2 || config.state === 3">
+      <div class="name_item"
+        v-for="(item,i) in lotteryingPerson"
+        :key="i">{{item}}</div>
     </div>
   </div>
 </template>
@@ -75,6 +76,12 @@ export default {
       this.lotteryingPerson = JSON.parse(JSON.stringify(config.result));
     },
     lotteryRemove(config) {
+      this.config = config;
+    },
+    lotterySync() {
+      this.$router.go(0);
+    },
+    reloadLottery(config) {
       this.config = config;
     }
   }
