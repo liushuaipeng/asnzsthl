@@ -61,8 +61,6 @@ export default {
     lotterySubmit(config) {
       // 准备抽奖，确定本次抽奖概况
       this.config = config;
-      this.title =
-        "奖项:" + config.title + "; 人数:" + config.number + "; 准备抽奖中";
     },
     lotteryStart(config) {
       // 开始抽奖
@@ -75,12 +73,15 @@ export default {
       this.stopAnimation();
       this.lotteryingPerson = JSON.parse(JSON.stringify(config.result));
     },
+    // 删除奖项
     lotteryRemove(config) {
       this.config = config;
     },
+    // 强制同步
     lotterySync() {
       this.$router.go(0);
     },
+    // 重置
     reloadLottery(config) {
       this.config = config;
     }
