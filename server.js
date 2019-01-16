@@ -45,7 +45,9 @@ var voteData = {
     state: 0,
     // 投票数据
     data: {},
-    voteList: voteList
+    voteList: voteList,
+    // 本次投票的唯一标识(当前时间戳+6位随机数)，重置之后标识改变
+    vd_id: new Date().getTime() + "" + (Math.random() * 1000000).toFixed(0)
 };
 voteList.forEach(item => {
     for (const key in item.data) {
@@ -156,12 +158,16 @@ app.post("/api/vote/submit", (req, res) => {
         res.json({ code: "error", data: "投票尚未开始或已截止" });
         return;
     }
-    req.body.forEach(item => {
+    if (req.body.isVote === voteData.vd_id) {
+        res.json({ code: "error", data: "已经投过票了，请勿重复投票" });
+        return;
+    }
+    req.body.list.forEach(item => {
         if (!!item.value) {
             voteData.data[item.value] = voteData.data[item.value] + 1;
         }
     });
-    res.json({ code: "success", data: "投票成功" });
+    res.json({ code: "success", data: "投票成功", isVote: voteData.vd_id });
     console.log(`ip为${req.ip}投票成功;当前结果`, voteData.data);
 });
 // 开始投票
@@ -199,14 +205,15 @@ app.post("/api/vote/reload", (req, res) => {
         state: 0,
         // 投票数据
         data: {},
-        voteList: voteList
+        voteList: voteList,
+        vd_id: new Date().getTime() + "" + (Math.random() * 1000000).toFixed(0)
     };
     voteList.forEach(item => {
         for (const key in item.data) {
             voteData.data[key] = 0;
         }
     });
-    socketIo.emit("voteReload",voteData);
+    socketIo.emit("voteReload", voteData);
     res.json({ code: "success", data: "重置成功" });
 });
 server.listen(nodeConfig.port, () => {

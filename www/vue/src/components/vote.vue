@@ -41,17 +41,20 @@ export default {
   },
   methods: {
     submit() {
-      if(localStorage.getItem('isVote') === "Y") {
-        alert('已经投过票了，请勿重复投票')
-        return;
-      }
+      // if(localStorage.getItem('isVote') === "Y") {
+      //   alert('已经投过票了，请勿重复投票')
+      //   return;
+      // }
       if (!confirm("确定投票么？")) {
         return;
       }
-      var params = JSON.parse(JSON.stringify(this.voteList));
-      axios.post("/api/vote/submit", this.voteList).then(res => {
+      var params = {
+        list: JSON.parse(JSON.stringify(this.voteList)),
+        isVote: localStorage.getItem("isVote")
+      };
+      axios.post("/api/vote/submit", params).then(res => {
         if (res.data.code === "success") {
-          localStorage.setItem("isVote", "Y");
+          localStorage.setItem("isVote", res.data.isVote);
         }
         alert(res.data.data);
         // this.voteList = res.data.data;
