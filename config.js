@@ -1,7 +1,7 @@
 module.exports = {
     nodeConfig: {
-        // host: "liushuaipeng.cn",
-        host: "localhost",
+        host: "liushuaipeng.cn",
+        // host: "localhost",
         port: "3030"
     },
     voteList: [

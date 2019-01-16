@@ -113,6 +113,10 @@ export default {
   },
   methods: {
     onSubmit() {
+      if (this.config.number > this.config.totalPersonInit.length) {
+        alert('该奖项人数已经超过未中奖人数！')
+        return
+      }
       var data = JSON.parse(JSON.stringify(this.config));
       this.$socket.emit("lotteryGoSubmit", data);
     },
