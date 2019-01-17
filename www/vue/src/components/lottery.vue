@@ -48,6 +48,7 @@ export default {
   },
   sockets: {
     connect(res) {
+      console.log("connect");
       this.$socket.emit("lotteryInit", { url: "lottery" }, config => {
         this.config = config;
         if (config.state === 2) {

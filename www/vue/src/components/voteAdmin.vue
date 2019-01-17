@@ -181,6 +181,7 @@ export default {
   },
   sockets: {
     connect(res) {
+      console.log("connect");
       this.$socket.emit("voteInit", { url: "vote" }, data => {
         this.voteData = data;
         this.setData();
