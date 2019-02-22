@@ -79,7 +79,7 @@ socketIo.sockets.on("connection", socket => {
         config.result = [];
         for (let i = 0; i < config.number; i++) {
             var index = Math.floor(
-                Math.random() * (config.totalPersonInit.length - i)
+                Math.random() * config.totalPersonInit.length
             );
             config.result.push(config.totalPersonInit.splice(index, 1)[0]);
         }
